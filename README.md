@@ -18,9 +18,11 @@ with a single table `facts` where records have the following structure:
   retrieved with `git rev-parse --short HEAD` run in the submodule
   ipcc-fact-checking at the time of import
 
-  * source domain name (grandparent folder name)
+  * source domain name (grandgrandparent folder name)
 
-  * document identifier (parent folder name)
+  * document identifier (grandparent folder name)
+
+  * dataset identifier (parent folder name)
 
   * line number
   (0 for metadata, 1 for column headers, and greater for data records)
