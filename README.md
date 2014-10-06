@@ -11,8 +11,8 @@ The project ipcc-fact-checking is a collection of facts (data.csv files)
 and associated metadata (meta.txt files) related to IPCC authors.
 
 This project, ipcc-facts-import, defines a process to import data
-and metadata to a MySQL database, into a database `ipcc_facts_import`
-with a single table `facts` where records have the following structure:
+and metadata to a MySQL database, into a database `ipcc_facts` with a
+single table `facts` where records have the following structure:
 
   * short hash of the HEAD commit,
   retrieved with `git rev-parse --short HEAD` run in the submodule
