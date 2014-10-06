@@ -1,0 +1,3 @@
+[submodule "ipcc-fact-checking"]
+	path = ipcc-fact-checking
+	url = git@github.com:medea-project/ipcc-fact-checking.git
