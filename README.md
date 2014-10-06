@@ -29,15 +29,15 @@ with a single table `facts` where records have the following structure:
 
   * value (tag value for metadata, column value for data records)
 
-  One record is inserted for each line before the first empty line
-  in meta.txt files (description is located after an empty line,
-  and thus skipped) and for each value of each record in data.csv files
-  (lines with empty values only are counted in the offset but skipped).
+One record is inserted for each line before the first empty line
+in meta.txt files (description is located after an empty line,
+and thus skipped) and for each value of each record in data.csv files
+(lines with empty values only are counted in the offset but skipped).
 
-  In a refinement step, records with multiple values
-  (e.g. `'Tags'`, `'Name (Country)'`) get split into multiple records
-  with the same source, a new name  (`'Tag'`, `'Name'` and `'Country'`
-  in the example) and separate values.
+In a refinement step, records with multiple values
+(e.g. `'Tags'`, `'Name (Country)'`) get split into multiple records
+with the same source, a new name  (`'Tag'`, `'Name'` and `'Country'`
+in the example) and separate values.
 
 ## Attribution
 
