@@ -5,6 +5,16 @@ GOAL: to import data and metadata
 from ipcc-fact-checking project
 to a MySQL database
 
+## Usage
+
+- Run `import.sh`, which generates `import.sql`.
+- Run `mysql.server start` to start the database, if necessary
+- Run `import.sql` to import the facts into table `ipcc_facts.facts`
+
+**NOTA BENE:** `import.sql` deletes the previous version of `ipcc_facts`
+database completely before performing the new import; only the latest
+facts will be present after import.
+
 ## Project Description
 
 The project ipcc-fact-checking is a collection of facts (data.csv files)
