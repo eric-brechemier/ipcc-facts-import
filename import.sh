@@ -122,7 +122,7 @@ parseMetaFile()
 
 parseDataLine()
 {
-  echo "$1"
+  echo "$2"
 }
 
 parseDataFile()
@@ -131,9 +131,10 @@ parseDataFile()
   while read dataLine
   do
     line=$(expr $line + 1)
+    headers=${headers:-"$dataLine"}
     case $dataLine in
       # line with at list one value
-      *[!,]*) parseDataLine "$dataLine";;
+      *[!,]*) parseDataLine "$dataLine" "$headers";;
       # only commas: no value
       *) continue
     esac
