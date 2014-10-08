@@ -59,6 +59,10 @@ CREATE TABLE IF NOT EXISTS facts (
   )
 )
 ;
+
+-- insert facts
+INSERT INTO facts
+VALUES
 EOF
 
 identify()
@@ -70,18 +74,57 @@ identify()
   document=$(basename "$source")
   source=$(dirname "$source")
   source=$(basename "$source")
-  cat << EOF
-commit: $commit
-source: $source
-document: $document
-dataset: $dataset
-EOF
+#  cat << EOF
+#commit: $commit
+#source: $source
+#document: $document
+#dataset: $dataset
+#EOF
+}
+
+factSeparator=' '
+
+addFact()
+{
+  echo \
+    "$factSeparator (" \
+      "'$commit'," \
+      "'$source'," \
+      "'$document'," \
+      "'$dataset'," \
+      "$line," \
+      "'$name'," \
+      "\"$value\"" \
+    ')' \
+    >> import.sql
+  factSeparator=','
+}
+
+addMetaFact()
+{
+  line=0
+  name=${1%%": "*}
+  value=${1#*": "}
+  addFact
+}
+
+addMetaFacts()
+{
+  while read metaLine
+  do
+    case $metaLine in
+      *": "*) addMetaFact "$metaLine";;
+      # stop on first empty line
+      "") break
+    esac
+  done < "$1"
 }
 
 echo "Gather facts from meta.txt files"
 for meta in ipcc-fact-checking/*/*/*/meta.txt
 do
   identify "$meta"
+  addMetaFacts "$meta"
 done
 
 echo "Gather facts from data.csv files"
@@ -89,5 +132,7 @@ for data in ipcc-fact-checking/*/*/*/data.csv
 do
   identify "$data"
 done
+
+echo ';' >> import.sql
 
 echo "Complete. You can now run import.sql to perform the actual import."
