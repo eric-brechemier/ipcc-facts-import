@@ -46,8 +46,8 @@ DEFAULT CHARACTER SET utf8
 ;
 USE ipcc_facts
 
--- drop table (new definition)
-DROP TABLE facts;
+#-- drop table (uncomment to apply new definition)
+#DROP TABLE facts;
 
 -- create table facts
 CREATE TABLE IF NOT EXISTS facts (
