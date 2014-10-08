@@ -120,9 +120,57 @@ parseMetaFile()
   done < "$1"
 }
 
+# Reference:
+# Split() is Not Always The Best Way to Split a String
+# http://www.regexguru.com/2009/04/split-is-not-always-the-best-way-to-split-a-string/
+
+parseDataField()
+{
+  case "$headerFields" in
+    # quoted field
+    \"*)
+      # discard initial quote character
+      headerFields=${headerFields#\"}
+      # field ends with ",
+      endOfField='\",'
+    ;;
+    # unquoted field
+    *)
+      # field ends with ,
+      endOfField=','
+  esac
+  name=${headerFields%%$endOfField*}
+  headerFields=${headerFields#$name$endOfField}
+
+  case "$dataFields" in
+    # quoted field
+    \"*)
+      dataFields=${dataFields#\"}
+      endOfField='\",'
+    ;;
+    # unquoted field
+    *)
+      endOfField=','
+  esac
+  value=${dataFields%%$endOfField*}
+  dataFields=${dataFields#$value$endOfField}
+
+  # skip empty values
+  if test -n "$value"
+  then
+    addFact
+  fi
+}
+
 parseDataLine()
 {
-  echo "$2"
+  dataFields="$1"
+  headerFields="$2"
+
+  until test -z "$headerFields"
+  do
+    parseDataField
+  done
 }
 
 parseDataFile()
@@ -134,7 +182,9 @@ parseDataFile()
     headers=${headers:-"$dataLine"}
     case $dataLine in
       # line with at list one value
-      *[!,]*) parseDataLine "$dataLine" "$headers";;
+      # parse the data row and headers,
+      # with a final ',' added to simplify parsing
+      *[!,]*) parseDataLine "$dataLine," "$headers,";;
       # only commas: no value
       *) continue
     esac
