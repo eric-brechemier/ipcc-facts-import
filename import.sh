@@ -11,20 +11,23 @@ echo "Change to parent directory of the script"
 cd $(dirname $0)
 echo "Current directory: $(pwd)"
 
+# Reference:
+# Update a submodule to the latest commit
+# http://stackoverflow.com/a/8191413
 echo "Remove untracked files from ipcc-fact-checking submodule"
 cd ipcc-fact-checking
 git clean -df
+git checkout master
+echo "Update ipcc-fact-checking to latest commit"
+git pull origin master
 cd ..
-
-echo "Update ipcc-fact-checking submodule (discarding local changes)"
-git submodule update --init --force --quiet ipcc-fact-checking
 
 # Reference:
 # "Get the short git version hash"
 # http://stackoverflow.com/a/5694416
 cd ipcc-fact-checking
-shortHash=$(git rev-parse --short HEAD)
-echo "Read short hash of last commit: $shortHash"
+commit=$(git rev-parse --short HEAD)
+echo "Read short hash of last commit: $commit"
 cd ..
 
 echo "Create SQL script import.sql"
@@ -57,5 +60,34 @@ CREATE TABLE IF NOT EXISTS facts (
 )
 ;
 EOF
+
+identify()
+{
+  echo "File: $1"
+  source=$(dirname "$1")
+  dataset=$(basename "$source")
+  source=$(dirname "$source")
+  document=$(basename "$source")
+  source=$(dirname "$source")
+  source=$(basename "$source")
+  cat << EOF
+commit: $commit
+source: $source
+document: $document
+dataset: $dataset
+EOF
+}
+
+echo "Gather facts from meta.txt files"
+for meta in ipcc-fact-checking/*/*/*/meta.txt;
+do
+  identify "$meta"
+done
+
+echo "Gather facts from data.csv files"
+for data in ipcc-fact-checking/*/*/*/data.csv;
+do
+  identify "$data"
+done
 
 echo "Complete. You can now run import.sql to perform the actual import."
