@@ -10,8 +10,8 @@
 # Config: size of database fields in characters
 commitMaxSize=7
 sourceMaxSize=30
-documentMaxSize=40
-datasetMaxSize=30
+documentMaxSize=35
+datasetMaxSize=35
 nameMaxSize=30
 valueMaxSize=1000
 
