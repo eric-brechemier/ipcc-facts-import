@@ -130,7 +130,7 @@ parseDataFile()
   line=0
   while read dataLine
   do
-    line=$(expr $line + 1)
+    line=$(($line + 1))
     headers=${headers:-"$dataLine"}
     case $dataLine in
       # line with at list one value
