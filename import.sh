@@ -120,6 +120,25 @@ addMetaFacts()
   done < "$1"
 }
 
+addDataFact()
+{
+}
+
+addDataFacts()
+{
+  line=0
+  while read dataLine
+  do
+    line=$(expr $line + 1)
+    case $dataLine in
+      # line with at list one value
+      *[!,]*) addDataFact "$dataLine";;
+      # only commas: no value
+      *) continue
+    esac
+  done < "$1"
+}
+
 echo "Gather facts from meta.txt files"
 for meta in ipcc-fact-checking/*/*/*/meta.txt
 do
@@ -131,6 +150,7 @@ echo "Gather facts from data.csv files"
 for data in ipcc-fact-checking/*/*/*/data.csv
 do
   identify "$data"
+  addDataFacts "$data"
 done
 
 echo ';' >> import.sql
