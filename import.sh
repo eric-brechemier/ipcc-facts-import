@@ -179,7 +179,10 @@ parseDataFile()
   while read -r dataLine
   do
     line=$(($line + 1))
-    headers=${headers:-"$dataLine"}
+    if test "$line" -eq 1
+    then
+      headers="$dataLine"
+    fi
     case $dataLine in
       # line with at list one value
       # parse the data row and headers,
