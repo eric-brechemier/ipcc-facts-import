@@ -65,6 +65,11 @@ INSERT INTO facts
 VALUES
 EOF
 
+logError()
+{
+  echo "ERROR: $1"
+}
+
 identify()
 {
   echo "File: $1"
@@ -124,6 +129,12 @@ parseMetaFile()
 # Split() is Not Always The Best Way to Split a String
 # http://www.regexguru.com/2009/04/split-is-not-always-the-best-way-to-split-a-string/
 
+discardEndOfDataLine()
+{
+  # skip the rest of the line
+  headerFields=''
+}
+
 parseDataField()
 {
   case "$headerFields" in
@@ -139,8 +150,16 @@ parseDataField()
       # field ends with ,
       endOfField=','
   esac
-  name=${headerFields%%$endOfField*}
-  headerFields=${headerFields#$name$endOfField}
+  case "$headerFields" in
+    *$endOfField*)
+      name=${headerFields%%$endOfField*}
+      headerFields=${headerFields#$name$endOfField}
+    ;;
+    *)
+      logError "End of field '$endOfField' not found in '$headerFields'"
+      discardEndOfDataLine
+      return
+  esac
 
   case "$dataFields" in
     # quoted field
@@ -152,8 +171,16 @@ parseDataField()
     *)
       endOfField=','
   esac
-  value=${dataFields%%$endOfField*}
-  dataFields=${dataFields#$value$endOfField}
+  case "$dataFields" in
+    *$endOfField*)
+      value=${dataFields%%$endOfField*}
+      dataFields=${dataFields#$value$endOfField}
+    ;;
+    *)
+      logError "End of field '$endOfField' not found in '$dataFields'"
+      discardEndOfDataLine
+      return
+  esac
 
   # skip empty values
   if test -n "$value"
