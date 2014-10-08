@@ -79,13 +79,13 @@ EOF
 }
 
 echo "Gather facts from meta.txt files"
-for meta in ipcc-fact-checking/*/*/*/meta.txt;
+for meta in ipcc-fact-checking/*/*/*/meta.txt
 do
   identify "$meta"
 done
 
 echo "Gather facts from data.csv files"
-for data in ipcc-fact-checking/*/*/*/data.csv;
+for data in ipcc-fact-checking/*/*/*/data.csv
 do
   identify "$data"
 done
