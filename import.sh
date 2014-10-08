@@ -110,7 +110,7 @@ parseMetaLine()
 
 parseMetaFile()
 {
-  while read metaLine
+  while read -r metaLine
   do
     case $metaLine in
       *": "*) parseMetaLine "$metaLine";;
@@ -128,7 +128,7 @@ parseDataLine()
 parseDataFile()
 {
   line=0
-  while read dataLine
+  while read -r dataLine
   do
     line=$(($line + 1))
     headers=${headers:-"$dataLine"}
