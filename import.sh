@@ -100,7 +100,7 @@ addFact()
   factSeparator=','
 }
 
-addMetaFact()
+parseMetaLine()
 {
   line=0
   name=${1%%": "*}
@@ -108,23 +108,24 @@ addMetaFact()
   addFact
 }
 
-addMetaFacts()
+parseMetaFile()
 {
   while read metaLine
   do
     case $metaLine in
-      *": "*) addMetaFact "$metaLine";;
+      *": "*) parseMetaLine "$metaLine";;
       # stop on first empty line
       "") break
     esac
   done < "$1"
 }
 
-addDataFact()
+parseDataLine()
 {
+  echo "$1"
 }
 
-addDataFacts()
+parseDataFile()
 {
   line=0
   while read dataLine
@@ -132,7 +133,7 @@ addDataFacts()
     line=$(expr $line + 1)
     case $dataLine in
       # line with at list one value
-      *[!,]*) addDataFact "$dataLine";;
+      *[!,]*) parseDataLine "$dataLine";;
       # only commas: no value
       *) continue
     esac
@@ -143,14 +144,14 @@ echo "Gather facts from meta.txt files"
 for meta in ipcc-fact-checking/*/*/*/meta.txt
 do
   identify "$meta"
-  addMetaFacts "$meta"
+  parseMetaFile "$meta"
 done
 
 echo "Gather facts from data.csv files"
 for data in ipcc-fact-checking/*/*/*/data.csv
 do
   identify "$data"
-  addDataFacts "$data"
+  parseDataFile "$data"
 done
 
 echo ';' >> import.sql
