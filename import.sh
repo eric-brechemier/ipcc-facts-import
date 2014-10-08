@@ -7,6 +7,14 @@
 # import.sh
 #
 
+# Config: size of database fields in characters
+commitMaxSize=7
+sourceMaxSize=30
+documentMaxSize=40
+datasetMaxSize=30
+nameMaxSize=30
+valueMaxSize=1000
+
 echo "Change to parent directory of the script"
 cd $(dirname $0)
 echo "Current directory: $(pwd)"
@@ -38,21 +46,24 @@ DEFAULT CHARACTER SET utf8
 ;
 USE ipcc_facts
 
+-- drop table (new definition)
+DROP TABLE facts;
+
 -- create table facts
 CREATE TABLE IF NOT EXISTS facts (
-  commit CHAR(7) NOT NULL
+  commit CHAR($commitMaxSize) NOT NULL
   COMMENT 'hash of latest commit in ipcc-fact-checking',
-  source VARCHAR(30) NOT NULL
+  source VARCHAR($sourceMaxSize) NOT NULL
   COMMENT 'first-level folder name in ipcc-fact-checking',
-  document VARCHAR(40) NOT NULL
+  document VARCHAR($documentMaxSize) NOT NULL
   COMMENT 'second-level folder name in ipcc-fact-checking',
-  dataset VARCHAR(30) NOT NULL
+  dataset VARCHAR($datasetMaxSize) NOT NULL
   COMMENT 'third-level folder name in ipcc-fact-checking',
   line SMALLINT UNSIGNED NOT NULL
   COMMENT 'line number in data.csv, or 0 for meta.txt',
-  name VARCHAR(30) NOT NULL
+  name VARCHAR($nameMaxSize) NOT NULL
   COMMENT 'column header in data.csv, property name in meta.txt',
-  value VARCHAR(1000) NOT NULL
+  value VARCHAR($valueMaxSize) NOT NULL
   COMMENT 'field value in data.csv, property value in meta.txt',
   PRIMARY KEY USING HASH (
     commit, source, document, dataset, line, name
@@ -70,6 +81,14 @@ logError()
   echo "ERROR: $1"
 }
 
+checkSize()
+{
+  if test "${#2}" -gt "$3"
+  then
+    logError "$1 '$2' has ${#2} characters > maximum expected: $3"
+  fi
+}
+
 identify()
 {
   echo "File: $1"
@@ -85,12 +104,18 @@ identify()
 #document: $document
 #dataset: $dataset
 #EOF
+  checkSize 'Commit' "$commit" $commitMaxSize
+  checkSize 'Source' "$source" $sourceMaxSize
+  checkSize 'Document' "$document" $documentMaxSize
+  checkSize 'Dataset' "$dataset" $datasetMaxSize
 }
 
 factSeparator=' '
 
 addFact()
 {
+  checkSize 'Fact Name' "$name" $nameMaxSize
+  checkSize 'Fact Value' "$value" $valueMaxSize
   echo \
     "$factSeparator (" \
       "'$commit'," \
