@@ -140,7 +140,12 @@ parseMetaLine()
 
 parseMetaFile()
 {
-  while read -r metaLine
+  # Reference:
+  # Shell script read missing last line
+  # http://stackoverflow.com/a/12919766
+
+  # Read file line by line, including last line without EOF
+  while read -r metaLine || test -n "$metaLine"
   do
     case $metaLine in
       *": "*) parseMetaLine "$metaLine";;
@@ -228,7 +233,9 @@ parseDataLine()
 parseDataFile()
 {
   line=0
-  while read -r dataLine
+
+  # Read file line by line, including last line without EOF
+  while read -r dataLine || test -n "$dataLine"
   do
     line=$(($line + 1))
     if test "$line" -eq 1
