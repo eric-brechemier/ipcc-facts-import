@@ -13,7 +13,7 @@ sourceMaxSize=30
 documentMaxSize=35
 datasetMaxSize=35
 nameMaxSize=30
-valueMaxSize=1000
+valueMaxSize=1100
 
 echo "Change to parent directory of the script"
 cd $(dirname $0)
