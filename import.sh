@@ -72,8 +72,6 @@ CREATE TABLE IF NOT EXISTS facts (
 ;
 
 -- insert facts
-INSERT INTO facts
-VALUES
 EOF
 
 logError()
@@ -110,14 +108,14 @@ identify()
   checkSize 'Dataset' "$dataset" $datasetMaxSize
 }
 
-factSeparator=' '
+insertFact='INSERT INTO facts VALUES'
 
 addFact()
 {
   checkSize 'Fact Name' "$name" $nameMaxSize
   checkSize 'Fact Value' "$value" $valueMaxSize
   echo \
-    "$factSeparator (" \
+    "$insertFact (" \
       "'$commit'," \
       "'$source'," \
       "'$document'," \
@@ -125,9 +123,8 @@ addFact()
       "$line," \
       "'$name'," \
       "\"$value\"" \
-    ')' \
+    ');' \
     >> import.sql
-  factSeparator=','
 }
 
 parseMetaLine()
