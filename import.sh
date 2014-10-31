@@ -269,4 +269,5 @@ done
 
 echo ';' >> import.sql
 
-echo "Complete. You can now run import.sql to perform the actual import."
+echo "Facts from commit '$commit' are ready for import."
+echo "You can now run import.sql to perform the actual import."
