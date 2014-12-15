@@ -7,6 +7,7 @@ to a MySQL database
 
 ## Usage
 
+- Initialize the git submodule for the first time with `git submodule init` and `git submodule update`.
 - Run `import.sh`, which generates `import.sql`.
 - Run `mysql.server start` to start the database, if necessary
 - Run `import.sql` to insert new facts into the table `ipcc_facts.facts`
